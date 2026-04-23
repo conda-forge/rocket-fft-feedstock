@@ -1,5 +1,5 @@
 {% set name = "rocket-fft" %}
-{% set version = "0.2.2" %}
+{% set version = "0.3.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/styfenschaer/rocket-fft/archive/v{{ version }}.tar.gz
-  sha256: 13915b9e70909589bd0301ea79c465de1c6d80ea69d015a0b3f41c8c1caf0fe7
+  sha256: 33573c5277d79012f8e6bdbc08ee359bbe7747c6318416424672054b06d7c229
 
 build:
   script: {{ PYTHON }} -m pip install . -vv
@@ -16,6 +16,7 @@ build:
 requirements:
   build:
     - {{ compiler('cxx') }}
+    - {{ stdlib("c") }}
   host:
     - numba >=0.56.0
     - numpy
