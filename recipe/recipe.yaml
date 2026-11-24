@@ -1,0 +1,71 @@
+schema_version: 1
+
+context:
+  version: "0.4.1"
+
+package:
+  name: rocket-fft
+  version: ${{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/source/r/rocket-fft/rocket_fft-${{ version }}.tar.gz
+  sha256: a421a391d779d57af188416ed803213bac6c18c06be8efbea8666f38924d150d
+
+build:
+  number: 0
+  skip: is_abi3 and not is_python_min
+  script: ${{ PYTHON }} -m pip install . -vv
+  python:
+    version_independent: ${{ is_abi3 }}
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
+    - ${{ compiler('cxx') }}
+    - if: build_platform != host_platform
+      then:
+        - python
+        - cross-python_${{ host_platform }}
+  host:
+    - if: is_abi3
+      then: python-abi3
+    - python
+    - setuptools >=80
+    - pip
+  run:
+    - python
+    - numba >=0.60.0
+    - numpy >=2.0
+
+tests:
+  - python:
+      imports:
+        - rocket_fft
+      python_version:
+        - if: is_abi3
+          then: ${{ python_min }}.*
+        - "*"
+  - if: is_abi3
+    then:
+      requirements:
+        run:
+          - abi3audit
+      script:
+        - if: unix
+          then: abi3audit $SP_DIR/rocket_fft/_rocket_fft_numba.abi3.so -s -v --assume-minimum-abi3 ${{ python_min }}
+          else: abi3audit %SP_DIR%/rocket_fft/_rocket_fft_numba.pyd -s -v --assume-minimum-abi3 ${{ python_min }}
+
+about:
+  summary: Rocket-FFT extends Numba by scipy.fft and numpy.fft
+  license: BSD-3-Clause
+  license_file:
+    - LICENSE
+    - LICENSES/
+  homepage: https://github.com/styfenschaer/rocket-fft
+  repository: https://github.com/styfenschaer/rocket-fft
+
+extra:
+  recipe-maintainers:
+    - goanpeca
+    - JaRoSchm
