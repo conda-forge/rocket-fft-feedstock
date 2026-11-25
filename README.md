@@ -222,5 +222,4 @@ Feedstock Maintainers
 =====================
 
 * [@JaRoSchm](https://github.com/JaRoSchm/)
-* [@goanpeca](https://github.com/goanpeca/)
 
